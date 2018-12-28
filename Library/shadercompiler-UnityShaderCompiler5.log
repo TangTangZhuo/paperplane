@@ -1,0 +1,92 @@
+Base path: /Applications/Unity2018/Unity2018.app/Contents
+Cmd: initializeCompiler
+Cmd: disassembleShader
+  api=14 insize=4147 outsize=4099 ok=1
+Cmd: disassembleShader
+  api=15 insize=13398 outsize=13398 ok=1
+Cmd: disassembleShader
+  api=15 insize=18693 outsize=18693 ok=1
+Cmd: disassembleShader
+  api=14 insize=15609 outsize=15561 ok=1
+Cmd: disassembleShader
+  api=15 insize=9695 outsize=9695 ok=1
+Cmd: disassembleShader
+  api=15 insize=9473 outsize=9473 ok=1
+Cmd: disassembleShader
+  api=15 insize=10824 outsize=10824 ok=1
+Cmd: disassembleShader
+  api=15 insize=12463 outsize=12463 ok=1
+Cmd: disassembleShader
+  api=14 insize=7825 outsize=7777 ok=1
+Cmd: disassembleShader
+  api=15 insize=0 outsize=57 ok=1
+Cmd: disassembleShader
+  api=14 insize=10534 outsize=10486 ok=1
+Cmd: disassembleShader
+  api=14 insize=2953 outsize=2905 ok=1
+Cmd: disassembleShader
+  api=15 insize=0 outsize=57 ok=1
+Cmd: disassembleShader
+  api=15 insize=7304 outsize=7304 ok=1
+Cmd: disassembleShader
+  api=15 insize=0 outsize=57 ok=1
+Cmd: disassembleShader
+  api=14 insize=4801 outsize=4753 ok=1
+Cmd: disassembleShader
+  api=14 insize=3584 outsize=3536 ok=1
+Cmd: disassembleShader
+  api=15 insize=14369 outsize=14369 ok=1
+Cmd: disassembleShader
+  api=15 insize=0 outsize=57 ok=1
+Cmd: disassembleShader
+  api=15 insize=7997 outsize=7997 ok=1
+Cmd: disassembleShader
+  api=15 insize=9780 outsize=9780 ok=1
+Cmd: disassembleShader
+  api=14 insize=5358 outsize=5310 ok=1
+Cmd: disassembleShader
+  api=15 insize=0 outsize=57 ok=1
+Cmd: disassembleShader
+  api=14 insize=8709 outsize=8661 ok=1
+Cmd: disassembleShader
+  api=14 insize=4627 outsize=4579 ok=1
+Cmd: disassembleShader
+  api=14 insize=2766 outsize=2718 ok=1
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Cmd: initializeCompiler
+Unhandled exception: Protocol error - unexpected end of data (did the Editor crash?)
+
+Quitting shader compiler process
