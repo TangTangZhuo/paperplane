@@ -1,0 +1,14 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Cartoon Town and Farm/Standard Assets/Editor/Image Effects/CameraMotionBlurEditor.js">
+    <Files>
+      <File FileName="Assets/Scripts/PlaneController.cs" Line="131" Column="16" />
+      <File FileName="Assets/Scripts/Camera/CameraRotate.cs" Line="99" Column="5" />
+      <File FileName="Assets/Cartoon Town and Farm/Standard Assets/Editor/Image Effects/CameraMotionBlurEditor.js" Line="31" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

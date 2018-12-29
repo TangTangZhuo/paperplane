@@ -13,7 +13,12 @@ public class PlaneController : MonoBehaviour {
 	bool addPlaneSpeedSwitch = false;
 	Quaternion initRotation;
 
-	public GameObject startText;
+	//public GameObject startText;
+	public Transform personPlane;
+	public Animator personAnimator;
+	public RuntimeAnimatorController idel;
+	public RuntimeAnimatorController throwPlane;
+	public Avatar avatar;
 	Animator animator;
 
 	static PlaneController instance;
@@ -70,24 +75,42 @@ public class PlaneController : MonoBehaviour {
 		} else {
 			
 		}
+
+		if (Input.GetKeyDown (KeyCode.P)) {
+			OnStartBtn ();
+		}
+		if (Input.GetKeyDown (KeyCode.R)) {
+			ReGame ();
+		}
 	}
 
-	public void OnStartBtn(){	
+	public void OnStartBtn(){
+		personAnimator.avatar = null;
+		personAnimator.runtimeAnimatorController = throwPlane;
+		Invoke ("Shootplane", (5/6f));
+	}
+
+	void Shootplane(){
+		transform.position = personPlane.position;
+		personPlane.gameObject.SetActive (false);
+		transform.Find ("plane").gameObject.SetActive (true);
+		transform.Find ("plane").DOScale (1, 0.5f);
 		rig.constraints = RigidbodyConstraints.None;	
 		rig.AddForce (transform.forward * -force, ForceMode.Acceleration);
 		start = true;
-		startText.SetActive (false);
 		StartCoroutine (ChangeCameraSpeed ());
 	}
 
 	//飞机提前发射一段距离
 	IEnumerator ChangeCameraSpeed(){
 		yield return new WaitForSeconds (0.5f);
+		float curTime = 0;
 		while (true) {
-			if (CameraRotate.Instance.zoomDampening >= 10) {
+			if (CameraRotate.Instance.zoomDampening >= 20) {
 				yield break;
 			}
-			CameraRotate.Instance.zoomDampening = Mathf.Lerp (CameraRotate.Instance.zoomDampening, 20, Time.deltaTime);
+			curTime += Time.deltaTime/10;
+			CameraRotate.Instance.zoomDampening = Mathf.Lerp (CameraRotate.Instance.zoomDampening, 22, curTime);
 			yield return null;
 		}
 	}
@@ -112,18 +135,25 @@ public class PlaneController : MonoBehaviour {
 		start = false;
 		animator.enabled = false;
 		animator.enabled = true;
+		personPlane.gameObject.SetActive (true);
 		transform.position = initPos;
 		transform.rotation = initRotation;
 		transform.Find ("plane").rotation = Quaternion.Euler (Vector3.zero);
-		startText.SetActive (true);
 		rig.velocity = Vector3.zero;
 		rig.constraints = RigidbodyConstraints.FreezeAll;
 		CameraRotate.Instance.ReGame ();
+		CameraRotate.Instance.zoomDampening = 3;
+		CameraRotate.Instance.transform.position = transform.position;
+		transform.Find ("plane").localScale = new Vector3(0.3f,0.3f,0.3f);
+		transform.Find ("plane").gameObject.SetActive (false);
+		personAnimator.runtimeAnimatorController = idel;
+		personAnimator.avatar = avatar;
 	}
 
 	void OnCollisionEnter(Collision coll){
 		if (coll.transform.tag == "trashcan") {			
 			StartCoroutine (CameraRotate.Instance.IntoTrash_Camera ());
+			print (123);
 		}else if(coll.transform.tag == "start"){
 			
 		} 
