@@ -27,6 +27,7 @@ public class CameraRotate : MonoBehaviour
     private Vector3 position;
 	float yDegTemp;
 	bool gameEnd;
+	bool intoTrash;
 
 	PlaneController planeController;
 	public Rigidbody playerRig;
@@ -54,6 +55,7 @@ public class CameraRotate : MonoBehaviour
         desiredDistance = CameDistance;
 		planeController = PlaneController.Instance;
 		gameEnd = false;
+		intoTrash = false;
     }
 
     
@@ -81,7 +83,8 @@ public class CameraRotate : MonoBehaviour
 
         //xDeg = Vector3.Angle(Vector3.right, transform.right)-120;
 		xDeg = 180;
-        yDeg = Vector3.Angle(Vector3.up, transform.up);
+        //yDeg = Vector3.Angle(Vector3.up, transform.up);
+		yDeg = 9;
 		yDegTemp = yDeg;
     }
 
@@ -89,7 +92,12 @@ public class CameraRotate : MonoBehaviour
     void FixedUpdate()
 	{
 		// 设置相机旋转
-		desiredRotation = Quaternion.Euler (yDeg - playerRig.velocity.y*3, xDeg, 0);
+		//desiredRotation = Quaternion.Euler (yDeg - playerRig.velocity.y*3, xDeg, 0);
+		if (playerRig.velocity.y < 0&&!intoTrash) {
+			//desiredRotation = Quaternion.Euler (yDeg, xDeg, 0);
+		} else {
+			desiredRotation = Quaternion.Euler (yDeg - playerRig.velocity.y * 3, xDeg, 0);
+		}
 		currentRotation = transform.rotation;
 		
 		rotation = Quaternion.Lerp (currentRotation, desiredRotation, Time.deltaTime * zoomDampening);

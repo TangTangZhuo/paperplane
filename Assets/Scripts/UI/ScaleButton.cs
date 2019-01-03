@@ -11,6 +11,7 @@ public class ScaleButton : MonoBehaviour {
 	}
 
 	public void OnButtonClick(){
+		MultiHaptic.HapticMedium ();
 		transform.DOScale (1.1f, 0.15f).OnComplete (()=>{
 			transform.DOScale (1f, 0.15f);
 		}).SetEase(Ease.InBack);
