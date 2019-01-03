@@ -33,6 +33,7 @@ public class Settle : MonoBehaviour {
 		Gold.Instance.GetGold (plane.goldClaim);
 		plane.skill.UpdateText ();
 		gameObject.SetActive (false);
+		plane.ReGame ();
 	}
 
 	public void OnDoubleBtn(){
@@ -45,6 +46,7 @@ public class Settle : MonoBehaviour {
 					Gold.Instance.GetGold (plane.goldClaim * 2);
 					plane.skill.UpdateText ();
 					gameObject.SetActive (false);
+					plane.ReGame ();
 				}
 			};
 			TGSDK.AdRewardSuccessCallback = (string obj) => {

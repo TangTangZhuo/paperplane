@@ -14,6 +14,9 @@ public class Top : MonoBehaviour {
 	int max;
 	public Slider slider;
 
+	public GameObject levelAddition;
+	public GameObject levelUp;
+
 	PlaneController planeController;
 
 	// Use this for initialization
@@ -67,8 +70,13 @@ public class Top : MonoBehaviour {
 			int outLvl = (int)((cur - target + 1000) / 1000); 
 			target += 1000 * outLvl;
 			PlayerPrefs.SetInt ("target", target);
+			levelUp.SetActive (true);
 		}
 
 		UpdateText ();
+	}
+
+	public void OnLevelBtn(){
+		levelAddition.SetActive (true);
 	}
 }

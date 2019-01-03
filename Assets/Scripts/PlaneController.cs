@@ -13,13 +13,17 @@ public class PlaneController : MonoBehaviour {
 	bool addPlaneSpeedSwitch = false;
 	bool onAir = true;
 	bool endPlane = false;
+	bool correctionPlane = false;
 	Quaternion initRotation;
 	[HideInInspector]
 	public float curDistance;
 	[HideInInspector]
 	public int goldClaim = 0;
+	[HideInInspector]
+	public float shootRotation = 0;
 
 	public GameObject settle;
+	public GameObject distancePoint;
 	public Transform personPlane;
 	public Animator personAnimator;
 	public RuntimeAnimatorController idel;
@@ -75,7 +79,12 @@ public class PlaneController : MonoBehaviour {
 			}
 			//左右移动飞机
 			Vector3 targetEuler = Vector3.zero;
-			targetEuler = new Vector3 (rig.velocity.y, 0, 0);
+			if (correctionPlane) {
+				targetEuler = new Vector3 (rig.velocity.y, 0, 0);
+			}else {
+				targetEuler = new Vector3 (rig.velocity.y, transform.eulerAngles.y, transform.eulerAngles.z);
+			}
+
 			if (onAir) {
 				if (Input.GetKey (KeyCode.A)) {
 					rig.AddForce (Vector3.left * -100, ForceMode.Force);
@@ -114,10 +123,13 @@ public class PlaneController : MonoBehaviour {
 		onAir = true;
 		personAnimator.runtimeAnimatorController = throwPlane;
 		Invoke ("Shootplane", (5/6f));
-		StartCoroutine (GravityVary (0.4f+PlayerPrefs.GetInt ("power_level", 1)*0.2f));
+		float levelAddtion = 1 + ((PlayerPrefs.GetInt ("level", 1) - 1) * 3) / 100f;
+		StartCoroutine (GravityVary (0.4f+PlayerPrefs.GetInt ("power_level", 1)*0.2f*levelAddtion));
 		StartCoroutine (CheckVelociy ());
+		StartCoroutine (CorrectionPlane());
 		MultiHaptic.HapticHeavy ();
 		pointer.StopPoint ();
+		transform.eulerAngles = new Vector3 (10, shootRotation, 0);
 	}
 
 	void Shootplane(){
@@ -147,8 +159,9 @@ public class PlaneController : MonoBehaviour {
 		
 	//飞机旋转
 	IEnumerator AddPlaneSpeed(){	
-		
-		Physics.gravity = new Vector3 (0, 0, 0);
+		if (onAir) {
+			Physics.gravity = new Vector3 (0, 0, 0);
+		}
 		MultiHaptic.HapticHeavy ();
 		transform.DORotate (new Vector3 (12, transform.eulerAngles.y, transform.eulerAngles.z), 1f, RotateMode.Fast);
 		while (true) {			
@@ -164,9 +177,14 @@ public class PlaneController : MonoBehaviour {
 
 	}
 
+	IEnumerator CorrectionPlane(){
+		correctionPlane = false;
+		yield return new WaitForSeconds (2);
+		correctionPlane = true;
+	}
+
 	//重开游戏
-	public void ReGame(){
-		Settle ();
+	public void ReGame(){		
 		start = false;
 		onAir = false;
 		//animator.enabled = false;
@@ -191,10 +209,12 @@ public class PlaneController : MonoBehaviour {
 		Physics.gravity = new Vector3 (0, gravity, 0);
 		rig.drag = 0;
 		endPlane = false;
+		pointer.StartPoint ();
 	}
 
-	void Settle(){				
-		goldClaim = (int)(curDistance / 1.9f);
+	void Settle(){			
+		float levelAddtion = 1 + ((PlayerPrefs.GetInt ("level", 1) - 1) * 3) / 100f;	
+		goldClaim = (int)(curDistance / 1.9f * levelAddtion);
 		settle.SetActive (true);
 	}
 
@@ -226,7 +246,7 @@ public class PlaneController : MonoBehaviour {
 	IEnumerator StopPlane(){
 		while(true){
 			rig.velocity = Vector3.Lerp (rig.velocity, Vector3.zero, Time.deltaTime);
-			if (rig.velocity.magnitude <= 0.2f) {
+			if (rig.velocity.magnitude <= 0.3f) {
 				yield break;
 			}
 			yield return null;
@@ -250,8 +270,12 @@ public class PlaneController : MonoBehaviour {
 	IEnumerator CheckVelociy(){
 		yield return new WaitForSeconds(1f);
 		while (true) {
-			if (rig.velocity.magnitude <= 0.2f) {
-				ReGame ();
+			if (rig.velocity.magnitude <= 0.3f) {
+				//ReGame ();
+				GameObject go = Instantiate(distancePoint,GameObject.Find("Canvas").transform);
+				yield return new WaitForSeconds (2);
+				Destroy (go);
+				Settle ();
 				yield break;
 			}
 			yield return null;
