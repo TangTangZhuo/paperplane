@@ -86,7 +86,7 @@ public class Skill : MonoBehaviour {
 		UpdateButton ();
 	}
 
-	void UpdateButton(){
+	public void UpdateButton(){
 		gold = PlayerPrefs.GetInt ("gold", 0);
 		flipBtn.interactable = (gold >= flip_price);
 		powerBtn.interactable = (gold >= power_price);

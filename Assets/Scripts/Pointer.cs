@@ -2,17 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class Pointer : MonoBehaviour {
 	bool onStartClick = false;
-	
+	Image image;
 	IEnumerator PointerRorate(){
 		while (true) {
 			if (onStartClick) {				
 				yield break;
 			}
-			transform.DORotate (new Vector3 (0, 89, 0), 1, RotateMode.Fast).OnComplete (()=>{
-				transform.DORotate (new Vector3 (0, -89, 0), 1, RotateMode.Fast).SetEase(Ease.Linear);
+//			Vector3 euler = transform.eulerAngles;
+//			transform.DORotate (new Vector3 (euler.x, 89, euler.z), 1, RotateMode.Fast).OnComplete (()=>{
+//				transform.DORotate (new Vector3 (euler.x, -89, euler.z), 1, RotateMode.Fast).SetEase(Ease.Linear);
+//			}).SetEase(Ease.Linear);
+			image = GetComponent<Image>();
+			image.DOFillAmount (1, 1).OnComplete (()=>{
+				image.DOFillAmount (0, 1).SetEase(Ease.Linear);
 			}).SetEase(Ease.Linear);
 			yield return new WaitForSeconds(2);
 		}
@@ -25,12 +31,12 @@ public class Pointer : MonoBehaviour {
 
 	public void StopPoint(){
 		onStartClick = true;
+		PlaneController.Instance.shootForce = image.fillAmount;
 		transform.DOKill (false);
-		if (transform.eulerAngles.y > 180) {
-			PlaneController.Instance.shootRotation = ((transform.eulerAngles.y - 360) * 2 / 9);
-		} else {
-			PlaneController.Instance.shootRotation = (transform.eulerAngles.y * 2 / 9);
-		}
 
 	}
+
+	void OnEnable(){
+		StartCoroutine (PointerRorate ());
+	} 
 }

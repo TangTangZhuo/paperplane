@@ -118,14 +118,15 @@ public class CameraRotate : MonoBehaviour
     }
 
 	public IEnumerator IntoTrash_Camera(){
-		while (true) {
-			yDeg = Mathf.Lerp (yDeg, 80, Time.deltaTime);
-			currentDistance = Mathf.Lerp (currentDistance, 6, Time.deltaTime);
-			if (Mathf.Abs (yDeg - 80) < 0.1f||gameEnd) {
-				yield break;
-			}
-			yield return null;
-		}
+//		while (true) {
+//			yDeg = Mathf.Lerp (yDeg, 80, Time.deltaTime);
+//			currentDistance = Mathf.Lerp (currentDistance, 6, Time.deltaTime);
+//			if (Mathf.Abs (yDeg - 80) < 0.1f||gameEnd) {
+//				yield break;
+//			}
+//			yield return null;
+//		}
+		yield return null;
 	}
 
 	public void ReGame(){

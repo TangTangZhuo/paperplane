@@ -72,6 +72,8 @@
      <Compile Include="Assets\Cartoon Town and Farm\Tools\CameraBehaviors.cs" />
      <Compile Include="Assets\Cartoon Town and Farm\Tools\ScrollingUVs.cs" />
      <Compile Include="Assets\Scripts\Camera\CameraRotate.cs" />
+     <Compile Include="Assets\Scripts\Diamond3D.cs" />
+     <Compile Include="Assets\Scripts\DiamondGenerate.cs" />
      <Compile Include="Assets\Scripts\FPS.cs" />
      <Compile Include="Assets\Scripts\MultiHaptic.cs" />
      <Compile Include="Assets\Scripts\OfflineReward.cs" />
@@ -82,7 +84,9 @@
      <Compile Include="Assets\Scripts\UI\Diamond.cs" />
      <Compile Include="Assets\Scripts\UI\DistancePoint.cs" />
      <Compile Include="Assets\Scripts\UI\FlyDiamond.cs" />
+     <Compile Include="Assets\Scripts\UI\FlyDiamond1.cs" />
      <Compile Include="Assets\Scripts\UI\Gold.cs" />
+     <Compile Include="Assets\Scripts\UI\GuideBack.cs" />
      <Compile Include="Assets\Scripts\UI\Level.cs" />
      <Compile Include="Assets\Scripts\UI\LevelUp.cs" />
      <Compile Include="Assets\Scripts\UI\ScaleButton.cs" />
@@ -156,6 +160,7 @@
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlurDX11.shader" />
      <None Include="Assets\shader\MyStand.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\SeparableBlurPlus.shader" />
+     <None Include="Assets\Particle\UnlitVertexColour_Alpha.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\MultiPassHollywoodFlares.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\BlurEffectConeTaps.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\CameraMotionBlur.shader" />
