@@ -205,6 +205,9 @@ public class Shop : MonoBehaviour {
 	/// 场景切换
 	/// </summary>
 	public void OnShopBtn(){
+		if (PlaneController.Instance.start) {
+			return;
+		}
 		skill.SetActive (false);
 		shop.SetActive (true);
 		shop_camera.SetActive (true);

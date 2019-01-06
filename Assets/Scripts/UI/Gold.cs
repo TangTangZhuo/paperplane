@@ -27,14 +27,14 @@ public class Gold : MonoBehaviour {
 	}
 
 	IEnumerator GoldAdd(int number){
-		yield return new WaitForSeconds (1);
 		int curGold = PlayerPrefs.GetInt ("gold", 0);
 		int targetGold = curGold + number;
+		PlayerPrefs.SetInt ("gold", targetGold);
+		yield return new WaitForSeconds (1);
 		while (true) {			
 			curGold +=number/30;
 			if (curGold > targetGold) {
 				gold.text = "$ "+ targetGold;
-				PlayerPrefs.SetInt ("gold", targetGold);
 				yield break;
 			}
 			gold.text = "$ "+curGold;

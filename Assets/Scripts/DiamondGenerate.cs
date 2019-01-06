@@ -28,13 +28,21 @@ public class DiamondGenerate : MonoBehaviour {
 
 	IEnumerator GenerateDiamond(){
 		while (true) {
+			
+			yield return new WaitForSeconds (Random.Range (1f, 3f));
 			if (planeCon.start) {
-				yield return new WaitForSeconds (Random.Range (3f, 5f));
-
 				if (planeCon.findDiamond) {
-					Instantiate (diamond, plane.position + new Vector3 (0, 0, Random.Range (-10f, -20f)),diamond.transform.rotation,transform);	
-				} else {
-					Instantiate (diamond, plane.position + new Vector3 (0, planeRig.velocity.y/2-0.3f, -20),diamond.transform.rotation,transform);
+					Instantiate (diamond, plane.position + new Vector3 (0, 0, Random.Range (-10f, -20f)), diamond.transform.rotation, transform);
+					yield return new WaitForSeconds (0.5f);
+					Instantiate (diamond, plane.position + new Vector3 (Random.Range(-5,5), 0, Random.Range (-10f, -20f)), diamond.transform.rotation, transform);	
+					yield return new WaitForSeconds (0.5f);
+					Instantiate (diamond, plane.position + new Vector3 (Random.Range(-5,5), 0, Random.Range (-10f, -20f)), diamond.transform.rotation, transform);	
+				} else {					
+					Instantiate (diamond, plane.position + new Vector3 (0, planeRig.velocity.y / 2 - 0.3f, -20), diamond.transform.rotation, transform);
+					yield return new WaitForSeconds (0.5f);
+					Instantiate (diamond, plane.position + new Vector3 (Random.Range(-5,5), planeRig.velocity.y / 2 - 0.3f, -20), diamond.transform.rotation, transform);
+					yield return new WaitForSeconds (0.5f);
+					Instantiate (diamond, plane.position + new Vector3 (Random.Range(-5,5), planeRig.velocity.y / 2 - 0.3f, -20), diamond.transform.rotation, transform);
 				}
 			}
 			yield return null;

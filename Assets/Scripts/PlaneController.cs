@@ -10,6 +10,9 @@ public class PlaneController : MonoBehaviour {
 	public float gravity;
 	float perfectAdd = 1;
 	Vector3 initPos;
+	Vector3 initScenePos;
+	public GameObject scene1;
+	public GameObject scene2;
 	[HideInInspector]
 	public bool start = false;
 	bool addPlaneSpeedSwitch = false;
@@ -26,6 +29,7 @@ public class PlaneController : MonoBehaviour {
 	public int goldClaim = 0;
 	[HideInInspector]
 	public float shootForce = 0;
+	public float planeOffset = 0;
 
 	public GameObject settle;
 	public GameObject distancePoint;
@@ -59,11 +63,12 @@ public class PlaneController : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {		
+	void Start () {	
 		rig = GetComponent<Rigidbody> ();
 		animator = realPlane.GetComponent<Animator> ();
 		initPos = transform.position;
 		initRotation = transform.rotation;
+		initScenePos = scene1.transform.position;
 		Physics.gravity = new Vector3 (0, gravity, 0);
 		curDistance = 0;
 		pointer.StartPoint ();
@@ -103,21 +108,35 @@ public class PlaneController : MonoBehaviour {
 //			}
 			targetEuler = new Vector3 (rig.velocity.y, 0, 0);
 			if (onAir) {
-				if (Input.GetKey (KeyCode.A)) {
+				if (Input.GetKey (KeyCode.A)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved&&Input.GetTouch(0).deltaPosition.x<-5)) {					
+					
 					rig.AddForce (Vector3.left * -100, ForceMode.Force);
 					targetEuler += new Vector3 (0, -20, -30);
+					if (rig.velocity.x > 10) {
+						rig.velocity = new Vector3 (10, rig.velocity.y, rig.velocity.z);
+					}
 				}
-				if (Input.GetKey (KeyCode.D)) {
+				else if (Input.GetKey (KeyCode.D)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved&&Input.GetTouch(0).deltaPosition.x>5)) {
+					
 					rig.AddForce (Vector3.left * 100, ForceMode.Force);
 					targetEuler += new Vector3 (0, 20, 30);
+					if (rig.velocity.x < -10) {
+						rig.velocity = new Vector3 (-10, rig.velocity.y, rig.velocity.z);
+					}
+				} else {
+					rig.velocity = Vector3.Lerp(rig.velocity,new Vector3 (0, rig.velocity.y, rig.velocity.z),Time.deltaTime);
 				}
-			} else {
-				transform.position = Vector3.Lerp (transform.position, new Vector3 (transform.position.x, -0.45f, transform.position.z),Time.deltaTime);
 			}
 			transform.rotation = Quaternion.Lerp (transform.rotation,Quaternion.Euler (targetEuler), Time.deltaTime);
-
-			if (transform.position.y < -0.45f) {
-				transform.position = new Vector3 (transform.position.x, -0.45f, transform.position.z);
+			if (transform.position.x <= 600) {						
+				transform.position = new Vector3(600,transform.position.y,transform.position.z);
+			}
+			if (transform.position.x >= 800) {
+				transform.position = new Vector3(800,transform.position.y,transform.position.z);
+			}
+			if (transform.position.y < planeOffset) {
+				transform.position = new Vector3 (transform.position.x, planeOffset, transform.position.z);
+				//transform.position = Vector3.Lerp (transform.position, new Vector3 (transform.position.x,planeOffset, transform.position.z),Time.deltaTime);
 				realPlane.position = Vector3.Lerp(realPlane.position, transform.position,Time.deltaTime);
 			}
 		} else {
@@ -132,8 +151,7 @@ public class PlaneController : MonoBehaviour {
 		}
 		if (Input.GetKeyDown (KeyCode.O)) {
 			PlayerPrefs.DeleteAll ();
-		}
-			
+		}	
 	}
 
 	public void OnStartBtn(){
@@ -263,9 +281,12 @@ public class PlaneController : MonoBehaviour {
 	}
 
 	//重开游戏
-	public void ReGame(){	
+	public void ReGame(){
+		scene1.transform.position = initScenePos;
+		scene2.transform.position = initScenePos;	
 		start = false;
 		onAir = false;
+		isOver = false;
 		//animator.enabled = false;
 		animator.enabled = true;
 		personPlane.gameObject.SetActive (true);
@@ -292,7 +313,6 @@ public class PlaneController : MonoBehaviour {
 		endPlane = false;
 		perfectAdd = 1;
 		skill.gameObject.SetActive (true);
-		skill.UpdateButton ();
 		pointer.StartPoint ();
 		flipTril.SetActive (false);
 		perfectTril.SetActive (false);
@@ -303,25 +323,43 @@ public class PlaneController : MonoBehaviour {
 		float levelAddtion = 1 + ((PlayerPrefs.GetInt ("level", 1) - 1) * 3) / 100f;	
 		goldClaim = (int)(curDistance / 1.9f * levelAddtion);
 		settle.SetActive (true);
+		isOver = false;
 	}
 
 	void OnCollisionEnter(Collision coll){
 		StartCoroutine (StopPerfectTril ());
 		useFlip = false;
 		onAir = false;
+		if (!settle.activeSelf) {
+			isOver = true;
+		}
 		EndPlane ();
 		//rig.constraints = RigidbodyConstraints.FreezeAll;
 		//Physics.gravity = new Vector3 (0, -2, 0);
 		MultiHaptic.HapticHeavy ();
 		CameraRotate.Instance.target = realPlane;
-		if (coll.transform.tag == "trashcan") {			
-			//StartCoroutine (CameraRotate.Instance.IntoTrash_Camera ());
+		StartCoroutine (CheckGameover ());
+	}
 
-		}else if(coll.transform.tag == "start"){
-			
-		} 
-		else {			
-			
+	void OnTriggerEnter(Collider coll){
+		if (coll.name == "scene1") {
+			if (scene1.transform.position != scene2.transform.position) {
+				scene2.transform.position += new Vector3 (0, 0, -3317.8f);
+			}
+		}if (coll.name == "scene2") {
+			scene1.transform.position += new Vector3 (0, 0, -3317.8f);
+		}
+	}
+
+	bool isOver = false;
+	IEnumerator CheckGameover(){
+		yield return new WaitForSeconds (3);
+		if (isOver) {
+			isOver = false;
+			GameObject go = Instantiate (distancePoint, GameObject.Find ("Canvas").transform);
+			yield return new WaitForSeconds (1);
+			Destroy (go);
+			Settle ();
 		}
 	}
 
@@ -368,16 +406,24 @@ public class PlaneController : MonoBehaviour {
 		Physics.gravity = new Vector3 (0, -3, 0);
 		StartCoroutine (StopPerfectTril ());
 		useFlip = true;
+		Invoke ("OnWClick", 1.3f);
 		flipTril.SetActive (true);
-		yield return new WaitForSeconds (0.5f);
-		if (PlayerPrefs.GetInt ("flipguide", 0) == 1) {
-			flipGuide.SetActive (true);
-			PlayerPrefs.SetInt ("flipguide", 2);
-			Time.timeScale = 0;
-		}
-		if (PlayerPrefs.GetInt ("flipguide", 0) == 0) {
-			PlayerPrefs.SetInt ("flipguide", 1);
-		}
+//		yield return new WaitForSeconds (0.5f);
+//		if (PlayerPrefs.GetInt ("flipguide", 0) == 1) {
+//			flipGuide.SetActive (true);
+//			PlayerPrefs.SetInt ("flipguide", 2);
+//			Time.timeScale = 0;
+//		}
+//		if (PlayerPrefs.GetInt ("flipguide", 0) == 0) {
+//			PlayerPrefs.SetInt ("flipguide", 1);
+//		}
+	}
+
+	void OnWClick(){
+		Physics.gravity = new Vector3 (0, 0, 0);
+		useFlip = false;
+		animator.SetTrigger ("rotate");
+		StartCoroutine (CameraRotate.Instance.ChangeOffsetY (-1));
 	}
 
 	IEnumerator CheckVelociy(){
@@ -385,10 +431,13 @@ public class PlaneController : MonoBehaviour {
 		while (true) {
 			if (rig.velocity.magnitude <= 0.3f) {
 				//ReGame ();
-				GameObject go = Instantiate(distancePoint,GameObject.Find("Canvas").transform);
-				yield return new WaitForSeconds (1);
-				Destroy (go);
-				Settle ();
+				if (isOver) {
+					isOver = false;
+					GameObject go = Instantiate (distancePoint, GameObject.Find ("Canvas").transform);
+					yield return new WaitForSeconds (1);
+					Destroy (go);
+					Settle ();
+				}
 				yield break;
 			}
 			yield return null;
@@ -400,4 +449,5 @@ public class PlaneController : MonoBehaviour {
 			Destroy (diamondParent.GetChild(i).gameObject);
 		}
 	}
+		
 }
