@@ -32,67 +32,64 @@ public class Skill : MonoBehaviour {
 	}
 
 	public void OnPowerBtn(){
-		gold_C.UseGold (power_price);
-		gold -= power_price;
+		gold_C.UseGold (power_price*3);
+		gold -= power_price*3;
 		PlayerPrefs.SetInt ("gold", gold);
 		power_level++;
 		power_price = (int)(power_price*1.05f);
 		PlayerPrefs.SetInt ("power_level", power_level);
 		PlayerPrefs.SetInt ("power_price", power_price);
 		power_Level_text.text = (power_level).ToString ();
-		power_Price_text.text = (power_price).ToString ();
+		power_Price_text.text = (power_price*3).ToString ();
 		UpdateButton ();
 	}
 
 	public void OnFlipBth(){
-		gold_C.UseGold (flip_price);
-		gold -= flip_price;
+		gold_C.UseGold (flip_price*3);
+		gold -= flip_price*3;
 		PlayerPrefs.SetInt ("gold", gold);
 		flip_level++;
 		flip_price = (int)(flip_price*1.05f);
 		PlayerPrefs.SetInt ("flip_level", flip_level);
 		PlayerPrefs.SetInt ("flip_price", flip_price);
 		flip_Level_text.text = (flip_level).ToString ();
-		flip_price_text.text = (flip_price).ToString ();
+		flip_price_text.text = (flip_price*3).ToString ();
 		UpdateButton ();
 	}
 
 	public void OnOfflineBtn(){
-		gold_C.UseGold (offline_price);
-		gold -= offline_price;
+		gold_C.UseGold (offline_price*3);
+		gold -= offline_price*3;
 		PlayerPrefs.SetInt ("gold", gold);
 		offline_level++;
 		offline_price = (int)(offline_price*1.05f);
 		PlayerPrefs.SetInt ("offline_level", offline_level);
 		PlayerPrefs.SetInt ("offline_price", offline_price);
 		offline_Level_text.text = (offline_level).ToString ();
-		offline_price_text.text = (offline_price).ToString ();
+		offline_price_text.text = (offline_price*3).ToString ();
 		UpdateButton ();
 	}
 
 	public void UpdateText(){
-		flip_price = PlayerPrefs.GetInt ("flip_price", 748);
+		flip_price = PlayerPrefs.GetInt ("flip_price", 314);
 		offline_price = PlayerPrefs.GetInt ("offline_price", 200);
 		power_price = PlayerPrefs.GetInt ("power_price", 281);
 		flip_level = PlayerPrefs.GetInt ("flip_level", 1);
 		offline_level = PlayerPrefs.GetInt ("offline_level", 1);
 		power_level = PlayerPrefs.GetInt ("power_level", 1);
 		flip_Level_text.text = flip_level.ToString ();
-		flip_price_text.text = flip_price.ToString ();
+		flip_price_text.text = (flip_price*3).ToString ();
 		offline_Level_text.text = offline_level.ToString ();
-		offline_price_text.text = offline_price.ToString ();
+		offline_price_text.text = (offline_price*3).ToString ();
 		power_Level_text.text = power_level.ToString ();
-		power_Price_text.text = power_price.ToString ();
+		power_Price_text.text = (power_price*3).ToString ();
 		UpdateButton ();
 	}
 
 	public void UpdateButton(){
 		gold = PlayerPrefs.GetInt ("gold", 0);
-		print (gold);
-		print (flip_price);
-		print (power_price);
-		flipBtn.interactable = (gold >= flip_price);
-		powerBtn.interactable = (gold >= power_price);
-		offlineBtn.interactable = (gold >= offline_price);
+		flipBtn.interactable = (gold >= flip_price*3);
+		powerBtn.interactable = (gold >= power_price*3);
+		offlineBtn.interactable = (gold >= offline_price*3);
 	}
 }

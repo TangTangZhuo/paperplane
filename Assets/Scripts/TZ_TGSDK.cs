@@ -5,8 +5,8 @@ using Together;
 
 public class TZ_TGSDK : MonoBehaviour {
 	#if UNITY_IOS
-	public static string doubleID = "k7txsmtFVwrjHf9OAzp";
-	string appID = "Ecn061LEN1087o5i312v";
+	public static string doubleID = "6ambeszqFzzs72MUbbi";
+	string appID = "zB32A5JjJ8o8YX19B7L9";
 
 	#elif UNITY_ANDROID
 	public static string doubleID = "";

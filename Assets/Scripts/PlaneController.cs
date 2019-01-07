@@ -8,7 +8,7 @@ public class PlaneController : MonoBehaviour {
 
 	public float force;
 	public float gravity;
-	float perfectAdd = 1;
+	float perfectAdd = 0;
 	Vector3 initPos;
 	Vector3 initScenePos;
 	public GameObject scene1;
@@ -21,6 +21,8 @@ public class PlaneController : MonoBehaviour {
 	bool correctionPlane = false;
 	[HideInInspector]
 	public bool findDiamond = false;
+	[HideInInspector]
+	public bool flipDiamond = false;
 	bool useFlip = false;
 	Quaternion initRotation;
 	[HideInInspector]
@@ -30,6 +32,9 @@ public class PlaneController : MonoBehaviour {
 	[HideInInspector]
 	public float shootForce = 0;
 	public float planeOffset = 0;
+	string[] perfectWords;
+	string[] goodWords;
+	string[] badWords;
 
 	public GameObject settle;
 	public GameObject distancePoint;
@@ -46,6 +51,7 @@ public class PlaneController : MonoBehaviour {
 	public RuntimeAnimatorController idel;
 	public RuntimeAnimatorController throwPlane;
 	public Avatar avatar;
+	public Material skyMat;
 	Animator animator;
 
 	public Top top;
@@ -72,6 +78,9 @@ public class PlaneController : MonoBehaviour {
 		Physics.gravity = new Vector3 (0, gravity, 0);
 		curDistance = 0;
 		pointer.StartPoint ();
+		perfectWords = new string[]{"Perfect","Pretty","Beautiful","Brilliant"};
+		goodWords = new string[]{ "Nice", "Good", "Well", "Fine" };
+		//badWords = new string[]{ "Pity", "Sad", "Bad", "Almost" };
 	}
 	
 	// Update is called once per frame
@@ -110,24 +119,24 @@ public class PlaneController : MonoBehaviour {
 			if (onAir) {
 				if (Input.GetKey (KeyCode.A)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved&&Input.GetTouch(0).deltaPosition.x<-5)) {					
 					
-					rig.AddForce (Vector3.left * -100, ForceMode.Force);
+					rig.AddForce (Vector3.left * -300, ForceMode.Force);
 					targetEuler += new Vector3 (0, -20, -30);
-					if (rig.velocity.x > 10) {
-						rig.velocity = new Vector3 (10, rig.velocity.y, rig.velocity.z);
+					if (rig.velocity.x >= 15) {
+						rig.velocity = new Vector3 (15, rig.velocity.y, rig.velocity.z);
 					}
 				}
 				else if (Input.GetKey (KeyCode.D)||(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved&&Input.GetTouch(0).deltaPosition.x>5)) {
 					
-					rig.AddForce (Vector3.left * 100, ForceMode.Force);
+					rig.AddForce (Vector3.left * 300, ForceMode.Force);
 					targetEuler += new Vector3 (0, 20, 30);
-					if (rig.velocity.x < -10) {
-						rig.velocity = new Vector3 (-10, rig.velocity.y, rig.velocity.z);
+					if (rig.velocity.x <= -15) {
+						rig.velocity = new Vector3 (-15, rig.velocity.y, rig.velocity.z);
 					}
 				} else {
 					rig.velocity = Vector3.Lerp(rig.velocity,new Vector3 (0, rig.velocity.y, rig.velocity.z),Time.deltaTime);
 				}
 			}
-			transform.rotation = Quaternion.Lerp (transform.rotation,Quaternion.Euler (targetEuler), Time.deltaTime);
+			transform.rotation = Quaternion.Lerp (transform.rotation,Quaternion.Euler (targetEuler), Time.deltaTime*3);
 			if (transform.position.x <= 600) {						
 				transform.position = new Vector3(600,transform.position.y,transform.position.z);
 			}
@@ -154,6 +163,30 @@ public class PlaneController : MonoBehaviour {
 		}	
 	}
 
+	IEnumerator ChangeTimescale(float targetScale){
+		while (true) {
+			Time.timeScale = Mathf.Lerp (Time.timeScale, targetScale, Time.deltaTime*5);
+			if (Mathf.Abs( Time.timeScale - targetScale) < 0.3f) {
+				Time.timeScale = targetScale;
+				yield break;
+			}
+			yield return null;
+		}
+	}
+
+	IEnumerator StopTimeScale(float time){
+		yield return new WaitForSeconds (time);
+		while (true) {
+			Time.timeScale = Mathf.Lerp (Time.timeScale, 1, Time.unscaledDeltaTime);
+			//print (Time.timeScale);
+			if (Mathf.Abs( Time.timeScale - 1) < 0.1f) {
+				Time.timeScale = 1;
+				yield break;
+			}
+			yield return null;
+		}
+	}
+
 	public void OnStartBtn(){
 		skill.gameObject.SetActive (false);
 		personAnimator.avatar = null;
@@ -166,30 +199,34 @@ public class PlaneController : MonoBehaviour {
 		MultiHaptic.HapticHeavy ();
 		pointer.StopPoint ();
 		//transform.eulerAngles = new Vector3 (10, shootRotation, 0);
-		if (Mathf.Abs (shootForce-0.5f) < 0.05f) {
+		if (shootForce >= 0.88f) {
+			TipPop.GenerateTip (perfectWords [Random.Range (0, 4)], 0.5f);
 			StartCoroutine (PerfectShoot ());
 			Invoke ("Shootplane", (5/6f/1.8f));
+			perfectAdd = 2;
 		} else {
+			if (shootForce <= 0.4f) {
+				//TipPop.GenerateTip (badWords [Random.Range (0, 4)], 0.5f);
+				perfectAdd = -0.5f;
+			} else {
+				TipPop.GenerateTip (goodWords [Random.Range (0, 4)], 0.5f);
+			}
 			Invoke ("Shootplane", (5/6f/1.7f));
 			//StartCoroutine (NormalParticle ());
 			//personPlane.DOPunchScale(personPlane.localScale*2,0.5f,10,1);
 		}
 
-
-		float perfectTime = PlayerPrefs.GetInt ("power_level", 1) * 0.2f * levelAddtion * perfectAdd;
-		if ((shootForce >= 0 && shootForce <= 0.1f) || (shootForce <= 1 && shootForce >= 0.9f)) {
-			perfectTime *= 0.1f;
-		} else if ((shootForce > 0.1f && shootForce <= 0.2f) || (shootForce < 0.9f && shootForce >= 0.8f)) {
-			perfectTime *= 0.4f;
-		} else if ((shootForce > 0.2f && shootForce <= 0.3f) || (shootForce < 0.8f && shootForce >= 0.7f)) {
-			perfectTime *= 0.8f;
+		float perfectTime = PlayerPrefs.GetInt ("power_level", 1) * 0.6f * levelAddtion;
+		if (shootForce <= 0.43f) {
+			perfectTime *= shootForce / 0.43f * 0.5f + 0.5f;
 		} else {
-			perfectTime *= 1;
+			perfectTime *= (shootForce-0.43f) / (1 - 0.43f) * 0.5f + 1;
 		}
-
-		StartCoroutine (GravityVary (0.4f+perfectTime));
-
+		StartCoroutine (GravityVary (0.4f+perfectTime+perfectAdd));
+		StartCoroutine (StopTimeScale ((0.4f + perfectTime + perfectAdd) * 0.8f));
 	}
+
+
 
 	void Shootplane(){
 		transform.position = personPlane.position;
@@ -200,13 +237,16 @@ public class PlaneController : MonoBehaviour {
 		rig.AddForce (transform.forward * -force, ForceMode.Acceleration);
 		start = true;
 		StartCoroutine (ChangeCameraSpeed ());
-		if (Mathf.Abs (shootForce-0.5f) < 0.05f) {			
+		if (shootForce >= 0.88f) {			
 			perfectTril.SetActive (true);
+			StartCoroutine(ChangeTimescale (3));
+		}else{
+			StartCoroutine(ChangeTimescale (1.7f));
 		}
 	}
 
 	IEnumerator PerfectShoot(){
-		perfectAdd = 2;
+		//perfectAdd = 2;
 		Time.timeScale = 0.4f;
 		StartCoroutine (PerfectParticle ());
 		yield return new WaitForSeconds (0.5f);
@@ -246,11 +286,11 @@ public class PlaneController : MonoBehaviour {
 		yield return new WaitForSeconds (0.5f);
 		float curTime = 0;
 		while (true) {
-			if (CameraRotate.Instance.zoomDampening >= 20) {
+			if (CameraRotate.Instance.zoomDampening >= 12) {
 				yield break;
 			}
 			curTime += Time.deltaTime/10;
-			CameraRotate.Instance.zoomDampening = Mathf.Lerp (CameraRotate.Instance.zoomDampening, 22, curTime);
+			CameraRotate.Instance.zoomDampening = Mathf.Lerp (CameraRotate.Instance.zoomDampening, 13, curTime);
 			yield return null;
 		}
 	}
@@ -260,10 +300,18 @@ public class PlaneController : MonoBehaviour {
 		if (onAir) {				
 			MultiHaptic.HapticHeavy ();
 			transform.DORotate (new Vector3 (12, transform.eulerAngles.y, transform.eulerAngles.z), 1f, RotateMode.Fast);
+			flipDiamond = true;
 			while (true) {			
-				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z), Time.deltaTime * 4);
+				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z), Time.deltaTime * 8);
 				if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z)) < 0.1f) {
-					yield return new WaitForSeconds (PlayerPrefs.GetInt ("flip_level", 1)*0.2f);
+					float flipTime = 1;
+					if (shootForce <= 0.43f) {
+						flipTime *= shootForce / 0.43f * 0.5f + 0.5f;
+					} else {
+						flipTime *= (shootForce-0.43f) / (1 - 0.43f) * 0.5f + 1;
+					}
+					yield return new WaitForSeconds (PlayerPrefs.GetInt ("flip_level", 1)*0.4f*flipTime+perfectAdd);
+					flipDiamond = false;
 					break;
 				}
 				yield return null;
@@ -311,12 +359,15 @@ public class PlaneController : MonoBehaviour {
 		Physics.gravity = new Vector3 (0, gravity, 0);
 		rig.drag = 0;
 		endPlane = false;
-		perfectAdd = 1;
+		perfectAdd = 0;
 		skill.gameObject.SetActive (true);
 		pointer.StartPoint ();
 		flipTril.SetActive (false);
 		perfectTril.SetActive (false);
 		ClearDiamond ();
+		flipDiamond = false;
+		ChangeSkyColor ();
+		Time.timeScale = 1;
 	}
 
 	void Settle(){		
@@ -393,10 +444,12 @@ public class PlaneController : MonoBehaviour {
 	IEnumerator GravityVary(float time){
 		yield return new WaitForSeconds (1f);
 		Physics.gravity = new Vector3 (0, 0, 0);
+		//flipDiamond = true;
 		while (true) {			
 			rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z), Time.deltaTime*10);
 			if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z)) < 0.1f) {
 				findDiamond = true;
+				//flipDiamond = false;
 				break;
 			}
 			yield return null;
@@ -450,4 +503,7 @@ public class PlaneController : MonoBehaviour {
 		}
 	}
 		
+	void ChangeSkyColor(){
+		skyMat.SetColor ("_TintColor", new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f)));
+	}
 }

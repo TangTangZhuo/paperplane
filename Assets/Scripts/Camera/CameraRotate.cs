@@ -100,12 +100,12 @@ public class CameraRotate : MonoBehaviour
 		}
 		currentRotation = transform.rotation;
 		
-		rotation = Quaternion.Lerp (currentRotation, desiredRotation, Time.deltaTime * zoomDampening);
+		rotation = Quaternion.Lerp (currentRotation, desiredRotation, Time.unscaledDeltaTime * zoomDampening);
 		transform.rotation = rotation;
 
 		position = target.position - (rotation * Vector3.forward * currentDistance + targetOffset);
 		//transform.position = position;
-		transform.position = Vector3.Lerp (transform.position, position, Time.deltaTime * zoomDampening);	
+		transform.position = Vector3.Lerp (transform.position, position, Time.unscaledDeltaTime * zoomDampening);	
 	}
 
     private static float ClampAngle(float angle, float min, float max)
