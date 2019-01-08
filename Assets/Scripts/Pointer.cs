@@ -17,10 +17,10 @@ public class Pointer : MonoBehaviour {
 //				transform.DORotate (new Vector3 (euler.x, -89, euler.z), 1, RotateMode.Fast).SetEase(Ease.Linear);
 //			}).SetEase(Ease.Linear);
 			image = GetComponent<Image>();
-			image.DOFillAmount (1, 1).OnComplete (()=>{
-				image.DOFillAmount (0, 1).SetEase(Ease.Linear);
+			image.DOFillAmount (1, 0.6f).OnComplete (()=>{
+				image.DOFillAmount (0, 0.6f).SetEase(Ease.Linear);
 			}).SetEase(Ease.Linear);
-			yield return new WaitForSeconds(2);
+			yield return new WaitForSeconds(1.2f);
 		}
 	}
 

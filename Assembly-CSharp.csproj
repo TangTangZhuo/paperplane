@@ -93,6 +93,7 @@
      <Compile Include="Assets\Scripts\PlaneController.cs" />
      <Compile Include="Assets\Scripts\Pointer.cs" />
      <Compile Include="Assets\Scripts\Shop.cs" />
+     <Compile Include="Assets\Scripts\SkillGuide.cs" />
      <Compile Include="Assets\Scripts\TZ_TGSDK.cs" />
      <Compile Include="Assets\Scripts\UI\Diamond.cs" />
      <Compile Include="Assets\Scripts\UI\DistancePoint.cs" />
@@ -100,6 +101,7 @@
      <Compile Include="Assets\Scripts\UI\FlyDiamond1.cs" />
      <Compile Include="Assets\Scripts\UI\Gold.cs" />
      <Compile Include="Assets\Scripts\UI\GuideBack.cs" />
+     <Compile Include="Assets\Scripts\UI\GuidePoint.cs" />
      <Compile Include="Assets\Scripts\UI\Level.cs" />
      <Compile Include="Assets\Scripts\UI\LevelUp.cs" />
      <Compile Include="Assets\Scripts\UI\ScaleButton.cs" />
@@ -194,7 +196,6 @@
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\VignettingShader.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\Tonemapper.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BrightPassFilter.shader" />
-     <None Include="Assets\Sky\Skybox Cubemap Extended.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_Antialiasing\FXAA2.shader" />
      <None Include="Assets\shader\Double Sided Transparent Diffuse Bump.shader" />
      <None Include="Assets\Cartoon Town and Farm\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\ColorCorrection3DLut.shader" />

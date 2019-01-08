@@ -203,7 +203,7 @@ public class PlaneController : MonoBehaviour {
 			TipPop.GenerateTip (perfectWords [Random.Range (0, 4)], 0.5f);
 			StartCoroutine (PerfectShoot ());
 			Invoke ("Shootplane", (5/6f/1.8f));
-			perfectAdd = 2;
+			perfectAdd = 1.5f;
 		} else {
 			if (shootForce <= 0.4f) {
 				//TipPop.GenerateTip (badWords [Random.Range (0, 4)], 0.5f);
@@ -216,7 +216,7 @@ public class PlaneController : MonoBehaviour {
 			//personPlane.DOPunchScale(personPlane.localScale*2,0.5f,10,1);
 		}
 
-		float perfectTime = PlayerPrefs.GetInt ("power_level", 1) * 0.6f * levelAddtion;
+		float perfectTime = (PlayerPrefs.GetInt ("power_level", 0)) * 0.6f *3 * levelAddtion;
 		if (shootForce <= 0.43f) {
 			perfectTime *= shootForce / 0.43f * 0.5f + 0.5f;
 		} else {
@@ -224,9 +224,12 @@ public class PlaneController : MonoBehaviour {
 		}
 		StartCoroutine (GravityVary (0.4f+perfectTime+perfectAdd));
 		StartCoroutine (StopTimeScale ((0.4f + perfectTime + perfectAdd) * 0.8f));
+		Invoke ("CameraStartRotate", 2);
 	}
 
-
+	void CameraStartRotate(){
+		CameraRotate.Instance.startRotate = true;
+	}
 
 	void Shootplane(){
 		transform.position = personPlane.position;
@@ -239,9 +242,9 @@ public class PlaneController : MonoBehaviour {
 		StartCoroutine (ChangeCameraSpeed ());
 		if (shootForce >= 0.88f) {			
 			perfectTril.SetActive (true);
-			StartCoroutine(ChangeTimescale (3));
+			StartCoroutine(ChangeTimescale (4));
 		}else{
-			StartCoroutine(ChangeTimescale (1.7f));
+			StartCoroutine(ChangeTimescale (2.5f));
 		}
 	}
 
@@ -303,21 +306,22 @@ public class PlaneController : MonoBehaviour {
 			flipDiamond = true;
 			while (true) {			
 				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z), Time.deltaTime * 8);
-				if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z)) < 0.1f) {
+				if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z)) < 0.5f) {
+					rig.velocity = new Vector3 (rig.velocity.x, 0, rig.velocity.z);
 					float flipTime = 1;
 					if (shootForce <= 0.43f) {
 						flipTime *= shootForce / 0.43f * 0.5f + 0.5f;
 					} else {
 						flipTime *= (shootForce-0.43f) / (1 - 0.43f) * 0.5f + 1;
 					}
-					yield return new WaitForSeconds (PlayerPrefs.GetInt ("flip_level", 1)*0.4f*flipTime+perfectAdd);
+					yield return new WaitForSeconds ((PlayerPrefs.GetInt ("flip_level", 0))*0.4f*3*flipTime+perfectAdd);
 					flipDiamond = false;
 					break;
 				}
 				yield return null;
 			}
 		}
-		Physics.gravity = new Vector3 (0, -2, 0);
+		Physics.gravity = new Vector3 (0, -3, 0);
 		addPlaneSpeedSwitch = false;
 
 	}
@@ -350,6 +354,7 @@ public class PlaneController : MonoBehaviour {
 		CameraRotate.Instance.yDeg = 9;
 		CameraRotate.Instance.targetOffset.y = -0.35f;
 		CameraRotate.Instance.target = transform;
+		CameraRotate.Instance.startRotate = false;
 		realPlane.localScale = new Vector3(0.3f,0.3f,0.3f);
 		realPlane.gameObject.SetActive (false);
 		personAnimator.runtimeAnimatorController = idel;
@@ -372,7 +377,7 @@ public class PlaneController : MonoBehaviour {
 
 	void Settle(){		
 		float levelAddtion = 1 + ((PlayerPrefs.GetInt ("level", 1) - 1) * 3) / 100f;	
-		goldClaim = (int)(curDistance / 1.9f * levelAddtion);
+		goldClaim = (int)(curDistance / 1.9f / 2 * levelAddtion);
 		settle.SetActive (true);
 		isOver = false;
 	}
@@ -416,7 +421,7 @@ public class PlaneController : MonoBehaviour {
 
 	IEnumerator StopPerfectTril(){
 		//yield return new WaitForSeconds (2);
-		perfectTril.GetComponent<ParticleSystem> ().Stop ();
+		//perfectTril.GetComponent<ParticleSystem> ().Stop ();
 		yield return null;
 	}
 		
@@ -445,9 +450,16 @@ public class PlaneController : MonoBehaviour {
 		yield return new WaitForSeconds (1f);
 		Physics.gravity = new Vector3 (0, 0, 0);
 		//flipDiamond = true;
-		while (true) {			
-			rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z), Time.deltaTime*10);
-			if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z)) < 0.1f) {
+		while (true) {	
+			if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z)) > 3.5f) {	
+				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z), Time.deltaTime / 2);
+			} else {
+				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z), Time.deltaTime * 5);
+			}
+
+			if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z)) < 0.3f) {	
+				print ("ShootFinish");
+				rig.velocity = new Vector3 (rig.velocity.x, 0, rig.velocity.z);
 				findDiamond = true;
 				//flipDiamond = false;
 				break;
@@ -459,7 +471,8 @@ public class PlaneController : MonoBehaviour {
 		Physics.gravity = new Vector3 (0, -3, 0);
 		StartCoroutine (StopPerfectTril ());
 		useFlip = true;
-		Invoke ("OnWClick", 1.3f);
+		if (PlayerPrefs.GetInt ("flip_level", 0) != 0)
+			Invoke ("OnWClick", 1.3f);
 		flipTril.SetActive (true);
 //		yield return new WaitForSeconds (0.5f);
 //		if (PlayerPrefs.GetInt ("flipguide", 0) == 1) {
@@ -473,7 +486,7 @@ public class PlaneController : MonoBehaviour {
 	}
 
 	void OnWClick(){
-		Physics.gravity = new Vector3 (0, 0, 0);
+		//Physics.gravity = new Vector3 (0, 0, 0);
 		useFlip = false;
 		animator.SetTrigger ("rotate");
 		StartCoroutine (CameraRotate.Instance.ChangeOffsetY (-1));
@@ -504,6 +517,6 @@ public class PlaneController : MonoBehaviour {
 	}
 		
 	void ChangeSkyColor(){
-		skyMat.SetColor ("_TintColor", new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f)));
+		//skyMat.SetColor ("_TintColor", new Color (Random.Range (0, 1f), Random.Range (0, 1f), Random.Range (0, 1f)));
 	}
 }
