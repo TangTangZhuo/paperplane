@@ -2,15 +2,17 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UI/Gold.cs">
     <Files>
-      <File FileName="Assets/Scripts/PlaneController.cs" Line="315" Column="37" />
-      <File FileName="Assets/Scripts/Pointer.cs" Line="35" Column="1" />
-      <File FileName="Assets/Scripts/UI/Top.cs" Line="32" Column="20" />
-      <File FileName="Assets/Scripts/Shop.cs" Line="209" Column="11" />
-      <File FileName="Assets/Scripts/DiamondGenerate.cs" Line="36" Column="42" />
-      <File FileName="Assets/Scripts/UI/FlyDiamond.cs" Line="43" Column="1" />
-      <File FileName="Assets/Scripts/UI/Skill.cs" Line="91" Column="1" />
-      <File FileName="Assets/Scripts/UI/Settle.cs" Line="33" Column="21" />
-      <File FileName="Assets/Scripts/UI/Gold.cs" Line="37" Column="34" />
+      <File FileName="Assets/Scripts/PlaneController.cs" Line="380" Column="31" />
+      <File FileName="Assets/Scripts/Pointer.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UI/Skill.cs" Line="91" Column="64" />
+      <File FileName="Assets/Scripts/SkillGuide.cs" Line="16" Column="2" />
+      <File FileName="Assets/Scripts/UI/Settle.cs" Line="23" Column="19" />
+      <File FileName="Assets/Scripts/UI/LevelUp.cs" Line="12" Column="2" />
+      <File FileName="Assets/Scripts/UI/GuidePoint.cs" Line="13" Column="2" />
+      <File FileName="Assets/Scripts/OfflineReward.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UI/Gold.cs" Line="21" Column="5" />
+      <File FileName="Assets/Scripts/Camera/CameraRotate.cs" Line="142" Column="34" />
+      <File FileName="Assets/Scripts/DiamondGenerate.cs" Line="32" Column="57" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

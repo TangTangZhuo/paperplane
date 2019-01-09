@@ -29,7 +29,7 @@ public class DiamondGenerate : MonoBehaviour {
 	IEnumerator GenerateDiamond(){
 		while (true) {
 			
-			yield return new WaitForSeconds (Random.Range (1f, 3f));
+			yield return new WaitForSeconds (Random.Range (1f, 10f));
 			if (planeCon.start) {
 				if (planeCon.findDiamond) {					
 					Instantiate (diamond, plane.position + new Vector3 (0, 0, Random.Range (-10f, -20f)), diamond.transform.rotation, transform);

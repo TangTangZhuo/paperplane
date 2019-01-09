@@ -33,8 +33,8 @@ public class Gold : MonoBehaviour {
 		yield return new WaitForSeconds (1);
 		while (true) {			
 			curGold +=number/30;
-			if (curGold > targetGold) {
-				gold.text = "$ "+ targetGold;
+			if (curGold > targetGold) {				
+				gold.text = "$ "+ PlayerPrefs.GetInt ("gold", 0);;
 				yield break;
 			}
 			gold.text = "$ "+curGold;

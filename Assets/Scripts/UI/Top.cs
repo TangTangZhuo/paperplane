@@ -66,8 +66,8 @@ public class Top : MonoBehaviour {
 			PlayerPrefs.SetInt ("max", max);
 		}
 		if (cur >= target) {
-			PlayerPrefs.SetInt ("level", PlayerPrefs.GetInt ("level", 1) + 1);
 			int outLvl = (int)((cur - target + 1000) / 1000); 
+			PlayerPrefs.SetInt ("level", PlayerPrefs.GetInt ("level", 1) + outLvl);
 			target += 1000 * outLvl;
 			PlayerPrefs.SetInt ("target", target);
 			levelUp.SetActive (true);

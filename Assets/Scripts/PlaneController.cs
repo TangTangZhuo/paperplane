@@ -132,9 +132,10 @@ public class PlaneController : MonoBehaviour {
 					if (rig.velocity.x <= -15) {
 						rig.velocity = new Vector3 (-15, rig.velocity.y, rig.velocity.z);
 					}
-				} else {
+				} else if(Input.GetKeyUp (KeyCode.A)||Input.GetKeyUp (KeyCode.D)||Input.touchCount ==0){
 					rig.velocity = Vector3.Lerp(rig.velocity,new Vector3 (0, rig.velocity.y, rig.velocity.z),Time.deltaTime);
 				}
+
 			}
 			transform.rotation = Quaternion.Lerp (transform.rotation,Quaternion.Euler (targetEuler), Time.deltaTime*3);
 			if (transform.position.x <= 600) {						
@@ -175,10 +176,10 @@ public class PlaneController : MonoBehaviour {
 	}
 
 	IEnumerator StopTimeScale(float time){
+		StopCoroutine ("ChangeTimescale");
 		yield return new WaitForSeconds (time);
 		while (true) {
 			Time.timeScale = Mathf.Lerp (Time.timeScale, 1, Time.unscaledDeltaTime);
-			//print (Time.timeScale);
 			if (Mathf.Abs( Time.timeScale - 1) < 0.1f) {
 				Time.timeScale = 1;
 				yield break;
@@ -223,7 +224,7 @@ public class PlaneController : MonoBehaviour {
 			perfectTime *= (shootForce-0.43f) / (1 - 0.43f) * 0.5f + 1;
 		}
 		StartCoroutine (GravityVary (0.4f+perfectTime+perfectAdd));
-		StartCoroutine (StopTimeScale ((0.4f + perfectTime + perfectAdd) * 0.8f));
+		StartCoroutine (StopTimeScale ((0.4f + perfectTime + perfectAdd) * 0.8f+1.7f));
 		Invoke ("CameraStartRotate", 2);
 	}
 
@@ -242,9 +243,9 @@ public class PlaneController : MonoBehaviour {
 		StartCoroutine (ChangeCameraSpeed ());
 		if (shootForce >= 0.88f) {			
 			perfectTril.SetActive (true);
-			StartCoroutine(ChangeTimescale (4));
+			StartCoroutine("ChangeTimescale",4);
 		}else{
-			StartCoroutine(ChangeTimescale (2.5f));
+			StartCoroutine("ChangeTimescale", 2.5f);
 		}
 	}
 
@@ -304,9 +305,11 @@ public class PlaneController : MonoBehaviour {
 			MultiHaptic.HapticHeavy ();
 			transform.DORotate (new Vector3 (12, transform.eulerAngles.y, transform.eulerAngles.z), 1f, RotateMode.Fast);
 			flipDiamond = true;
-			while (true) {			
+			Physics.gravity = new Vector3 (0, 0, 0);
+			while (true) {				
 				rig.velocity = Vector3.Lerp (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z), Time.deltaTime * 8);
 				if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 2, rig.velocity.z)) < 0.5f) {
+					yield return new WaitForSeconds (0.5f);
 					rig.velocity = new Vector3 (rig.velocity.x, 0, rig.velocity.z);
 					float flipTime = 1;
 					if (shootForce <= 0.43f) {
@@ -314,7 +317,7 @@ public class PlaneController : MonoBehaviour {
 					} else {
 						flipTime *= (shootForce-0.43f) / (1 - 0.43f) * 0.5f + 1;
 					}
-					yield return new WaitForSeconds ((PlayerPrefs.GetInt ("flip_level", 0))*0.4f*3*flipTime+perfectAdd);
+					yield return new WaitForSeconds ((PlayerPrefs.GetInt ("flip_level", 0))*0.3f*3*flipTime+perfectAdd);
 					flipDiamond = false;
 					break;
 				}
@@ -334,6 +337,7 @@ public class PlaneController : MonoBehaviour {
 
 	//重开游戏
 	public void ReGame(){
+		StopAllCoroutines ();
 		scene1.transform.position = initScenePos;
 		scene2.transform.position = initScenePos;	
 		start = false;
@@ -373,6 +377,7 @@ public class PlaneController : MonoBehaviour {
 		flipDiamond = false;
 		ChangeSkyColor ();
 		Time.timeScale = 1;
+		addPlaneSpeedSwitch = false;
 	}
 
 	void Settle(){		
@@ -458,7 +463,6 @@ public class PlaneController : MonoBehaviour {
 			}
 
 			if (Vector3.Distance (rig.velocity, new Vector3 (rig.velocity.x, 0, rig.velocity.z)) < 0.3f) {	
-				print ("ShootFinish");
 				rig.velocity = new Vector3 (rig.velocity.x, 0, rig.velocity.z);
 				findDiamond = true;
 				//flipDiamond = false;
